@@ -23,6 +23,9 @@ public class Piece extends StackPane {
         this.type = type;
     }
 
+    public void setMoved(boolean moved) {//моё
+        this.moved = moved;
+    }
     public boolean wasMoved() {
         return moved;
     }
@@ -35,9 +38,9 @@ public class Piece extends StackPane {
         return oldY;
     }
 
-    public Piece(PieceType type,boolean isKing , int x, int y) {
+    public Piece(PieceType type,boolean moved , int x, int y) {
         this.type = type;
-        this.moved = isKing;
+        this.moved = moved;
         move(x, y);
 
         Ellipse ellipse = new Ellipse(TILE_SIZE * 0.3125, TILE_SIZE * 0.26);//создание главного элипса
