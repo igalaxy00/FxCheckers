@@ -1,4 +1,4 @@
-package checkers;
+package controller;
 
 /**
  *Enum которые определяет результат хода

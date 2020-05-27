@@ -1,4 +1,4 @@
-package checkers;
+package controller;
 
 import javafx.application.Application;
 import javafx.scene.Group;
@@ -6,6 +6,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+import javafx.util.Pair;
 import view.Piece;
 import view.Tile;
 
@@ -163,73 +164,79 @@ private MoveResult cut1 (int x1, int y1, int y2, Piece piece){
         int x0 = toBoard(piece.getOldX());//начальный x
         int y0 = toBoard(piece.getOldY());//начальный y
 
-        if (step){
-            if (piece.getType()==PieceType.RED||piece.getType()==PieceType.REDKING){
+        if (step) {
+            if (piece.getType() == PieceType.RED || piece.getType() == PieceType.REDKING) {
                 return new MoveResult(MoveType.NONE);
             }
-        }else {
-            if (piece.getType()==PieceType.WHITE||piece.getType()==PieceType.WHITEKING){
+        } else {
+            if (piece.getType() == PieceType.WHITE || piece.getType() == PieceType.WHITEKING) {
                 return new MoveResult(MoveType.NONE);
             }
         }
-
         boolean anyMoved = false;
-         boolean tryKill = Math.abs(newX - x0) == 2 ||
-                Math.abs(newY - y0) == 2;
-         for (int i = 1 ; i<9;i++){
-             for (int j = 1 ; j<9;j++){
-                if(board[i][j]!=null && board[i][j].hasPiece()&& board[i][j].getPiece().wasMoved())
+        boolean tryKill = (newY == y0 && (Math.abs(newX - x0) == 2) ||
+                newX == x0 && (Math.abs(newY - y0) == 2));
+        for (int i = 1; i < 9; i++) {
+            for (int j = 1; j < 9; j++) {
+                if (board[i][j] != null && board[i][j].hasPiece() && board[i][j].getPiece().wasMoved())
                     anyMoved = true;
-             }
-         }
-         if (anyMoved){
-        if(piece.wasMoved()){
-            int x1 = x0 + (newX - x0) / 2;
-            int y1 = y0 + (newY - y0) / 2;
-            if (tryKill) {//если x отличается на 2 И y =2 или -2
-                if (board[x1][y1].hasPiece()&& !board[newX][newX].hasPiece())
-                    if (piece.getType()==PieceType.WHITE && (board[x1][y1].getPiece().getType() == PieceType.RED
-                            || board[x1][y1].getPiece().getType() == PieceType.REDKING )||
-                            piece.getType()==PieceType.RED &&
-                                    (board[x1][y1].getPiece().getType() == PieceType.WHITE
-                                            || board[x1][y1].getPiece().getType() == PieceType.WHITEKING ))
-                        return new MoveResult(MoveType.KILL, board[x1][y1].getPiece());
-            }else
-                return new MoveResult(MoveType.NONE);
+            }
         }
-         }else{
-        if (piece.getType()==PieceType.WHITEKING ||piece.getType()==PieceType.REDKING){//ход дамки
-            return kingKill(x0,newX , y0, newY , piece);
-        }else {
-            if ( newX<1 || newY<1|| newX>WIDTH || newY>HEIGHT || board[newX][newY].hasPiece() ||//если там есть уже шашка или если это невозможна клетка
-                    (piece.getType()==PieceType.WHITE && newY-y0==1 || ((newX-x0==1 && y0-newY==1)|| (x0-newX==1 && y0-newY==1))) ||
-                    (piece.getType()==PieceType.RED && newY-y0==-1 || ((x0-newX==1 && newY-y0==1)|| (newX-x0==1 && newY-y0==1)))
-                   )
-            {
-            return new MoveResult(MoveType.NONE);//возвращается none значит не полилось передвинуть шашку
-        }
-        if ((Math.abs(newX - x0) == 1 && newY==y0 )||
-                ( Math.abs(newY - y0) == 1 && newX==x0)) {//если x отличается на 1 И направлеy
-            return new MoveResult(MoveType.NORMAL);//движение обычное
-        }
-        else if (tryKill) {//если x отличается на 2 И y =2 или -2
-            int x1 = x0 + (newX - x0) / 2;
-            int y1 = y0 + (newY - y0) / 2;
-            if (board[x1][y1].hasPiece())
-                if (    piece.getType()==PieceType.WHITE &&
-                        (board[x1][y1].getPiece().getType() == PieceType.RED
-                        || board[x1][y1].getPiece().getType() == PieceType.REDKING )||
-                        piece.getType()==PieceType.RED &&
-                                (board[x1][y1].getPiece().getType() == PieceType.WHITE
-                                || board[x1][y1].getPiece().getType() == PieceType.WHITEKING ))
-                    return new MoveResult(MoveType.KILL, board[x1][y1].getPiece());
+        if (anyMoved) {
+            if (piece.wasMoved()) {
+                int x1 = x0 + (newX - x0) / 2;
+                int y1 = y0 + (newY - y0) / 2;
+                if (tryKill) {//если x отличается на 2 И y =2 или -2
+                    if (board[x1][y1].hasPiece() && !board[newX][newX].hasPiece())
+                        if (piece.getType() == PieceType.WHITE && (board[x1][y1].getPiece().getType() == PieceType.RED
+                                || board[x1][y1].getPiece().getType() == PieceType.REDKING) ||
+                                piece.getType() == PieceType.RED &&
+                                        (board[x1][y1].getPiece().getType() == PieceType.WHITE
+                                                || board[x1][y1].getPiece().getType() == PieceType.WHITEKING)){
+                            return new MoveResult(MoveType.KILL, board[x1][y1].getPiece());}
+                } else
+                    return new MoveResult(MoveType.NONE);
+            }
+        } else {
+            if (piece.getType() == PieceType.WHITEKING || piece.getType() == PieceType.REDKING) {//ход дамки
+                return kingKill(x0, newX, y0, newY, piece);
+            } else {
+                if (newX < 1 || newY < 1 || newX > WIDTH || newY > HEIGHT || board[newX][newY].hasPiece() ||//если там есть уже шашка или если это невозможна клетка
+                        (piece.getType() == PieceType.WHITE && newY - y0 == 1 || ((newX - x0 == 1 && y0 - newY == 1) || (x0 - newX == 1 && y0 - newY == 1))) ||
+                        (piece.getType() == PieceType.RED && newY - y0 == -1 || ((x0 - newX == 1 && newY - y0 == 1) || (newX - x0 == 1 && newY - y0 == 1)))
+                ) {
+                    return new MoveResult(MoveType.NONE);//возвращается none значит не полилось передвинуть шашку
+                }
+                if ((Math.abs(newX - x0) == 1 && newY == y0) ||
+                        (Math.abs(newY - y0) == 1 && newX == x0)) {//если x отличается на 1 И направлеy
+                    return new MoveResult(MoveType.NORMAL);//движение обычное
+                } else if (tryKill) {//если x отличается на 2 И y =2 или -2
+                    int x1 = x0 + (newX - x0) / 2;
+                    int y1 = y0 + (newY - y0) / 2;
+                    if (board[x1][y1].hasPiece())
+                        if (piece.getType() == PieceType.WHITE &&
+                                (board[x1][y1].getPiece().getType() == PieceType.RED
+                                        || board[x1][y1].getPiece().getType() == PieceType.REDKING) ||
+                                piece.getType() == PieceType.RED &&
+                                        (board[x1][y1].getPiece().getType() == PieceType.WHITE
+                                                || board[x1][y1].getPiece().getType() == PieceType.WHITEKING))
+                            return new MoveResult(MoveType.KILL, board[x1][y1].getPiece());
 
+                }
+            }
         }
-        }  }
         return new MoveResult(MoveType.NONE);//если ничего не прошло то резултьтат// нан
     }
 
-    //проверка есть ли рядом шашки которые можно съесть
+
+    private Pair whoeseTurn (boolean step){
+        Pair<PieceType, PieceType> white = new Pair<>(PieceType.WHITE,PieceType.WHITEKING);
+        Pair<PieceType, PieceType> red = new Pair<>(PieceType.RED,PieceType.REDKING);
+        if (step)
+            return white;
+        return red;
+    }
+
     /**
      * Метод ниже проверяет есть ли рядом шашки которые можно съесть
      * @param x указывает на координату X где находится наша шашка
@@ -260,7 +267,7 @@ private MoveResult cut1 (int x1, int y1, int y2, Piece piece){
 
 
     private int toBoard(double pixel) {
-        return (int)(pixel + TILE_SIZE / 2) / TILE_SIZE;//добавление на доску пиксель + размер тайла...
+        return (int)(pixel + TILE_SIZE / 2) / TILE_SIZE;
     }
 
     @Override
@@ -298,6 +305,7 @@ private Piece makePiece(PieceType type ,  int x, int y) {
                     piece.abortMove();
                     break;
                 case NORMAL:
+                    System.out.println(piece.getOldX());
                     piece.move(newX, newY);
                     board[x0][y0].setPiece(null);//в старом месте нал
                     board[newX][newY].setPiece(piece);//в новом месте шашка
@@ -317,8 +325,6 @@ private Piece makePiece(PieceType type ,  int x, int y) {
                     Piece otherPiece = result.getPiece();
                     board[toBoard(otherPiece.getOldX())][toBoard(otherPiece.getOldY())].setPiece(null);
                     pieceGroup.getChildren().remove(otherPiece);
-
-                    System.out.println(isNearPiece( newX, newY));
                     break;
             }}
         if (newY==8 || newY==1){
@@ -335,7 +341,6 @@ private Piece makePiece(PieceType type ,  int x, int y) {
                         piece.setType(PieceType.REDKING);
                     board[newX][newY].setPiece(piece);//в новом месте шашка
                     step = !step;//переход ходя после обычного хода
-
                     break;
                 case KILL:
                     piece.move(newX, newY);

@@ -1,27 +1,27 @@
-package checkers;
+package controller;
 
 
 import view.Piece;
 
-public class MoveResult {
+class MoveResult {
 
     private MoveType type;
 
-    public MoveType getType() {
+    MoveType getType() {
         return type;
     }
 
     private Piece piece;
 
-    public Piece getPiece() {
+    Piece getPiece() {
         return piece;
     }
 
-    public MoveResult(MoveType type) {
+    MoveResult(MoveType type) {
         this(type, null);
     }
 
-    public MoveResult(MoveType type, Piece piece) {
+    MoveResult(MoveType type, Piece piece) {
         this.type = type;
         this.piece = piece;
     }

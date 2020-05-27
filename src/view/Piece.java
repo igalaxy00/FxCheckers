@@ -1,11 +1,11 @@
 package view;
 
-import checkers.PieceType;
+import controller.PieceType;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Ellipse;
 
-import static checkers.CheckersApp.TILE_SIZE;
+import static controller.CheckersApp.TILE_SIZE;
 
 
 public class Piece extends StackPane {

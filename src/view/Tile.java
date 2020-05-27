@@ -1,9 +1,8 @@
 package view;
 
-import checkers.CheckersApp;
+import controller.CheckersApp;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import view.Piece;
 
 
 public class Tile extends Rectangle {
