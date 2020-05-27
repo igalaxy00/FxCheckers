@@ -32,8 +32,6 @@ public class CheckersApp extends Application {
         AnchorPane  root = new AnchorPane ();
         root.setPrefSize((WIDTH) * TILE_SIZE, (HEIGHT) * TILE_SIZE); //размер поля
         root.getChildren().addAll(tileGroup, pieceGroup);
-        Label label = new Label("лол");
-
         for (int y = 0; y < HEIGHT; y++) {
             for (int x = 0; x < WIDTH; x++) {
                 Tile tile = new Tile((x + y) % 2 == 0, x, y);// (выбор цвета маркер , x,  y)
@@ -196,7 +194,7 @@ public class CheckersApp extends Application {
                 int x1 = x0 + (newX - x0) / 2;
                 int y1 = y0 + (newY - y0) / 2;
                 if (tryKill) {//если x отличается на 2 И y =2 или -2
-                    if (/*!board[newX][newX].hasPiece() && */!board[newX][newY].hasPiece()){
+                    if (!board[newX][newY].hasPiece()){
                         if (board[x1][y1].hasPiece() && piece.getType() == PieceType.WHITE && (board[x1][y1].getPiece().getType() == PieceType.RED
                                 || board[x1][y1].getPiece().getType() == PieceType.REDKING) ||
                                 piece.getType() == PieceType.RED &&
@@ -210,7 +208,7 @@ public class CheckersApp extends Application {
             if (piece.getType() == PieceType.WHITEKING || piece.getType() == PieceType.REDKING) {//ход дамки
                 return kingKill(x0, newX, y0, newY, piece);
             } else {
-                if (newX < 1 || newY < 1 || newX > WIDTH || newY > HEIGHT || board[newX][newY].hasPiece() ||//если там есть уже шашка или если это невозможна клетка
+                if (newX < 1 || newY < 1 || newX > WIDTH || newY > HEIGHT || board[newX][newY].hasPiece() ||
                         (piece.getType() == PieceType.WHITE && newY - y0 == 1 || ((newX - x0 == 1 && y0 - newY == 1) || (x0 - newX == 1 && y0 - newY == 1))) ||
                         (piece.getType() == PieceType.RED && newY - y0 == -1 || ((x0 - newX == 1 && newY - y0 == 1) || (newX - x0 == 1 && newY - y0 == 1)))
                 ) {
