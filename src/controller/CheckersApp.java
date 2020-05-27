@@ -352,7 +352,7 @@ private boolean checkBoard (){
                         // пишет что рядом есть шашки которые можно съесть а их нет (при случае когда шашка есть по горизонтали)
                         if (isNearPiece( newX, newY)){
                             piece.setMoved(true);
-                        }else{
+                        }else{ 
                             piece.setMoved(false);
                             step = !step;    //переход хода если больше некого есть
                         }
