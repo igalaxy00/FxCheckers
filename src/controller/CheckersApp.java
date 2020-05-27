@@ -261,6 +261,7 @@ public class CheckersApp extends Application {
      *Буду признателен если подскажете почему этот метод "isNearPiece" работает некорректно
      * и пишет что рядом есть шашки которые можно съесть а их нет при случае когда шашка ест по горизонтали что неверно
      * Метод ниже проверяет есть ли рядом шашки которые можно съесть
+     * никак не могу решить 1 проблему а без неё очередность ходов ломается
      * @param x указывает на координату X где находится наша шашка
      * @param y указывает на координату Y где находится наша шашка
      * @return возвращает есть ли рядом шашки которые можно съесть
@@ -343,6 +344,7 @@ private boolean checkBoard (){
                         piece.move(newX, newY);
                         board[x0][y0].setPiece(null);//в новом месте шашка
                         board[newX][newY].setPiece(piece);
+                        //никак не могу решить 1 проблему а без неё очередность ходов ломается
                         // Буду признателен если подскажете почему метод "isNearPiece" работает некорректно и
                         // пишет что рядом есть шашки которые можно съесть а их нет (при случае когда шашка есть по горизонтали)
                         if (isNearPiece( newX, newY)){
@@ -379,6 +381,7 @@ private boolean checkBoard (){
                         if(piece.getType()==PieceType.RED)
                             piece.setType(PieceType.REDKING);
                         board[newX][newY].setPiece(piece);//в новом месте шашка
+
                         if (isNearPiece( newX, newY)){
                             piece.setMoved(true);
                         }else {
