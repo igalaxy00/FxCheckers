@@ -355,7 +355,7 @@ private boolean checkBoard (){
                         }else{
                             piece.setMoved(false);
                             step = !step;    //переход хода если больше некого есть
-                        } 
+                        }
                         Piece otherPiece = result.getPiece();
                         board[toBoard(otherPiece.getOldX())][toBoard(otherPiece.getOldY())].setPiece(null);
                         pieceGroup.getChildren().remove(otherPiece);
