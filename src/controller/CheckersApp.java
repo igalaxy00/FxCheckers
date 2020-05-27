@@ -55,7 +55,9 @@ public class CheckersApp extends Application {
         return root;
     }
 
-
+    /**
+     * Метод ниже обрабатывает 2 из  4 вариантов как ходит дамка
+     * */
 private MoveResult cut1 (int x1, int y1, int y2, Piece piece){
     int killed = -1;
     for(int i = y1+1;i<y2 ; i++) {
@@ -90,7 +92,9 @@ private MoveResult cut1 (int x1, int y1, int y2, Piece piece){
 }
 
 
-
+    /**
+     * Метод ниже обрабатывает 2 из  4 вариантов как ходит дамка
+     * */
     private MoveResult cut2 (int x1, int x2, int y1, Piece piece){
         int killed = -1;
         for(int i = x1+1;i<x2 ; i++) {
