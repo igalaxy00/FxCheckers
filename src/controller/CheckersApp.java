@@ -174,26 +174,29 @@ private MoveResult cut1 (int x1, int y1, int y2, Piece piece){
             }
         }
         boolean anyMoved = false;
-        boolean tryKill = (newY == y0 && (Math.abs(newX - x0) == 2) ||
-                newX == x0 && (Math.abs(newY - y0) == 2));
+        boolean tryKill = ((newY == y0 && (Math.abs(newX - x0) == 2) ||
+                newX == x0 && (Math.abs(newY - y0) == 2))&& !board[newX][newY].hasPiece());
         for (int i = 1; i < 9; i++) {
             for (int j = 1; j < 9; j++) {
-                if (board[i][j] != null && board[i][j].hasPiece() && board[i][j].getPiece().wasMoved())
+                if (board[i][j] != null && board[i][j].hasPiece() && board[i][j].getPiece().wasMoved()){
+
                     anyMoved = true;
+                }
             }
         }
         if (anyMoved) {
             if (piece.wasMoved()) {
+
                 int x1 = x0 + (newX - x0) / 2;
                 int y1 = y0 + (newY - y0) / 2;
                 if (tryKill) {//если x отличается на 2 И y =2 или -2
-                    if (board[x1][y1].hasPiece() && !board[newX][newX].hasPiece())
-                        if (piece.getType() == PieceType.WHITE && (board[x1][y1].getPiece().getType() == PieceType.RED
+                    if (/*!board[newX][newX].hasPiece() && */!board[newX][newY].hasPiece()){
+                        if (board[x1][y1].hasPiece() && piece.getType() == PieceType.WHITE && (board[x1][y1].getPiece().getType() == PieceType.RED
                                 || board[x1][y1].getPiece().getType() == PieceType.REDKING) ||
                                 piece.getType() == PieceType.RED &&
                                         (board[x1][y1].getPiece().getType() == PieceType.WHITE
                                                 || board[x1][y1].getPiece().getType() == PieceType.WHITEKING)){
-                            return new MoveResult(MoveType.KILL, board[x1][y1].getPiece());}
+                            return new MoveResult(MoveType.KILL, board[x1][y1].getPiece());}}
                 } else
                     return new MoveResult(MoveType.NONE);
             }
@@ -229,13 +232,6 @@ private MoveResult cut1 (int x1, int y1, int y2, Piece piece){
     }
 
 
-    private Pair whoeseTurn (boolean step){
-        Pair<PieceType, PieceType> white = new Pair<>(PieceType.WHITE,PieceType.WHITEKING);
-        Pair<PieceType, PieceType> red = new Pair<>(PieceType.RED,PieceType.REDKING);
-        if (step)
-            return white;
-        return red;
-    }
 
     /**
      * Метод ниже проверяет есть ли рядом шашки которые можно съесть
@@ -249,14 +245,14 @@ private MoveResult cut1 (int x1, int y1, int y2, Piece piece){
 
         if (board[x][y].getPiece().getType()==PieceType.WHITEKING || isWhite)//попробовать оставить проверку по всем направлениям и просто ловить налы
         {
-            return (board[x][y-1]!=null&& board[x][y-2]!=null && board[x][y-1].hasPiece() && board[x][y-1].getPiece().getType() == PieceType.RED && !board[x][y-2].hasPiece()) ||
+            return  (board[x][y-1]!=null&& board[x][y-2]!=null && board[x][y-1].hasPiece() && board[x][y-1].getPiece().getType() == PieceType.RED && !board[x][y-2].hasPiece()) ||
                     (board[x][y-1]!=null&& board[x][y-2]!=null &&board[x][y-1].hasPiece() && board[x][y-1].getPiece().getType() == PieceType.REDKING && !board[x][y-2].hasPiece()) ||
                     (board[x+1][y]!=null&& board[x+2][y]!=null &&board[x+1][y].hasPiece() && board[x+1][y].getPiece().getType() == PieceType.RED && !board[x+2][y].hasPiece()) ||
                     (board[x+1][y]!=null&& board[x+2][y]!=null &&board[x+1][y].hasPiece() && board[x+1][y].getPiece().getType() == PieceType.REDKING && !board[x+2][y].hasPiece()) ||
                     (board[x-1][y]!=null&& board[x-2][y]!=null &&board[x-1][y].hasPiece() && board[x-1][y].getPiece().getType() == PieceType.RED && !board[x-2][y].hasPiece()) ||
                     (board[x-1][y]!=null&& board[x-2][y]!=null &&board[x-1][y].hasPiece() && board[x-1][y].getPiece().getType() == PieceType.REDKING && !board[x-2][y].hasPiece());
         }else
-            return (board[x][y+1]!=null&& board[x][y+2]!=null && board[x][y+1].hasPiece() && board[x][y+1].getPiece().getType() == PieceType.WHITE&& !board[x][y+2].hasPiece()) ||
+            return  (board[x][y+1]!=null&& board[x][y+2]!=null && board[x][y+1].hasPiece() && board[x][y+1].getPiece().getType() == PieceType.WHITE&& !board[x][y+2].hasPiece()) ||
                     (board[x][y+1]!=null&& board[x][y+2]!=null && board[x][y+1].hasPiece() && board[x][y+1].getPiece().getType() == PieceType.WHITEKING&& !board[x][y+2].hasPiece()) ||
                     (board[x+1][y]!=null&& board[x+2][y]!=null && board[x+1][y].hasPiece() && board[x+1][y].getPiece().getType() == PieceType.WHITE&& !board[x+2][y].hasPiece()) ||
                     (board[x+1][y]!=null&& board[x+2][y]!=null && board[x+1][y].hasPiece() && board[x+1][y].getPiece().getType() == PieceType.WHITEKING&& !board[x+2][y].hasPiece()) ||
@@ -264,6 +260,20 @@ private MoveResult cut1 (int x1, int y1, int y2, Piece piece){
                     (board[x-1][y]!=null&& board[x-2][y]!=null && board[x-1][y].hasPiece() && board[x-1][y].getPiece().getType() == PieceType.WHITEKING&& !board[x-2][y].hasPiece());//false когда рядом нет шашек которые можно съесть
     }
 
+
+private boolean checkBoard (){
+    for (int i = 1; i < 9; i++) {
+        for (int j = 1; j < 9; j++) {
+            if (board[i][j] != null &&
+                    board[i][j].hasPiece() &&
+                    isNearPiece(i,j) &&
+                    board[i][j].getPiece().wasMoved()){
+                return true;
+            }
+        }
+    }
+    return false;
+}
 
 
     private int toBoard(double pixel) {
@@ -292,7 +302,6 @@ private Piece makePiece(PieceType type ,  int x, int y) {
         int newY = toBoard(piece.getLayoutY());
         MoveResult result;
         if (newX < 0 || newY < 0 || newX >= WIDTH+1 || newY >= HEIGHT+1) {
-            //veefv
             result = new MoveResult(MoveType.NONE);//если мы хотим переместиться вне поля то NONE
         } else {
             result = tryMove(piece, newX, newY);//иначе попробоавть подвинуть в новый x y шашку
@@ -305,7 +314,6 @@ private Piece makePiece(PieceType type ,  int x, int y) {
                     piece.abortMove();
                     break;
                 case NORMAL:
-                    System.out.println(piece.getOldX());
                     piece.move(newX, newY);
                     board[x0][y0].setPiece(null);//в старом месте нал
                     board[newX][newY].setPiece(piece);//в новом месте шашка
@@ -313,8 +321,9 @@ private Piece makePiece(PieceType type ,  int x, int y) {
                     break;
                 case KILL:
                     piece.move(newX, newY);
-                    board[x0][y0].setPiece(null);
-                    board[newX][newY].setPiece(piece);//в новом месте шашка
+                    board[x0][y0].setPiece(null);//в новом месте шашка
+                    board[newX][newY].setPiece(piece);
+                    //вот тут проблемное место с isNearPiece
                     if (isNearPiece( newX, newY)){
                         piece.setMoved(true);
                     }
