@@ -234,6 +234,7 @@ private MoveResult cut1 (int x1, int y1, int y2, Piece piece){
 
 
     /**
+     *Буду признателен если подскажете почему этот метод "isNearPiece" работает некорректно и пишет что рядом есть шашки которые можно съесть а их нет
      * Метод ниже проверяет есть ли рядом шашки которые можно съесть
      * @param x указывает на координату X где находится наша шашка
      * @param y указывает на координату Y где находится наша шашка
@@ -323,7 +324,7 @@ private Piece makePiece(PieceType type ,  int x, int y) {
                     piece.move(newX, newY);
                     board[x0][y0].setPiece(null);//в новом месте шашка
                     board[newX][newY].setPiece(piece);
-                    //вот тут проблемное место с isNearPiece
+                    // Буду признателен если подскажете почему метод "isNearPiece" работает некорректно и пишет что рядом есть шашки которые можно съесть а их нет
                     if (isNearPiece( newX, newY)){
                         piece.setMoved(true);
                     }
