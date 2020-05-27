@@ -273,14 +273,11 @@ public class CheckersApp extends Application {
 
         if (board[x][y].getPiece().getType()==PieceType.WHITEKING || isWhite)
         {
-            return   (nearCheck(x,y,0,-1)&&board[x][y-1].getPiece().getType() == PieceType.RED)||
-                    (nearCheck(x,y,0,-1)&& board[x][y-1].getPiece().getType() == PieceType.REDKING)||
-                    (nearCheck(x,y,1,0)&& board[x+1][y].getPiece().getType() == PieceType.RED )||
-                    (nearCheck(x,y,1,0)&& board[x+1][y].getPiece().getType() == PieceType.REDKING )||
-                    (nearCheck(x,y,-1,0)&& board[x-1][y].getPiece().getType() == PieceType.RED)||
-                    (nearCheck(x,y,-1,0)&& board[x-1][y].getPiece().getType() == PieceType.REDKING);
+            return   (nearCheck(x,y,0,-1)&&(board[x][y-1].getPiece().getType() == PieceType.RED|| board[x][y-1].getPiece().getType() == PieceType.REDKING))||
+                    (nearCheck(x,y,1,0)&& (board[x+1][y].getPiece().getType() == PieceType.RED|| board[x+1][y].getPiece().getType() == PieceType.REDKING ))||
+                    (nearCheck(x,y,-1,0)&& (board[x-1][y].getPiece().getType() == PieceType.RED|| board[x-1][y].getPiece().getType() == PieceType.REDKING));
         }else
-            return  (nearCheck(x,y,0,1)&&(board[x][y-1].getPiece().getType() == PieceType.WHITE||board[x][y-1].getPiece().getType() == PieceType.WHITEKING))||
+            return  (nearCheck(x,y,0,1)&&(board[x][y-1].getPiece().getType() == PieceType.WHITE|| board[x][y-1].getPiece().getType() == PieceType.WHITEKING))||
                     (nearCheck(x,y,1,0)&& (board[x+1][y].getPiece().getType() == PieceType.WHITE|| board[x+1][y].getPiece().getType() == PieceType.WHITEKING) )||
                     (nearCheck(x,y,-1,0)&&( board[x-1][y].getPiece().getType() == PieceType.WHITE|| board[x-1][y].getPiece().getType() == PieceType.WHITEKING));
     }
@@ -352,7 +349,7 @@ private boolean checkBoard (){
                         // пишет что рядом есть шашки которые можно съесть а их нет (при случае когда шашка есть по горизонтали)
                         if (isNearPiece( newX, newY)){
                             piece.setMoved(true);
-                        }else{ 
+                        }else{
                             piece.setMoved(false);
                             step = !step;    //переход хода если больше некого есть
                         }
