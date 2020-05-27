@@ -50,7 +50,7 @@ public class Piece extends StackPane {
         ellipse.setStroke(Color.BLACK);//цвет ободка
         ellipse.setStrokeWidth(TILE_SIZE * 0.03);//толищна ободка
 
-       ellipse.setTranslateX((TILE_SIZE - TILE_SIZE * 0.3125 * 2) / 2);//расположение черного элипса
+        ellipse.setTranslateX((TILE_SIZE - TILE_SIZE * 0.3125 * 2) / 2);//расположение черного элипса
         ellipse.setTranslateY((TILE_SIZE - TILE_SIZE * 0.26 * 2) / 2);//расположение черного элипса
 
         getChildren().addAll( ellipse);//добавление всех в группу

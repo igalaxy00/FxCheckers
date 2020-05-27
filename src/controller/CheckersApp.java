@@ -4,11 +4,13 @@ import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.layout.GridPane;
+import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import javafx.util.Pair;
-import view.Piece;
+import view.*;
 import view.Tile;
+
+import java.awt.*;
 
 public class CheckersApp extends Application {
 
@@ -17,7 +19,7 @@ public class CheckersApp extends Application {
     private static final int HEIGHT = 8;
     private boolean step = true;
 
-    private Tile[][] board = new Tile[WIDTH+2][HEIGHT+2];//массив клеток
+    private Tile[][] board = new Tile[WIDTH][HEIGHT];//массив клеток
 
     private Group tileGroup = new Group();
     private Group pieceGroup = new Group();
@@ -27,21 +29,22 @@ public class CheckersApp extends Application {
      * @return корневой узел
      */
     private Parent createContent() {
-        GridPane root = new GridPane();
+        AnchorPane  root = new AnchorPane ();
         root.setPrefSize((WIDTH) * TILE_SIZE, (HEIGHT) * TILE_SIZE); //размер поля
         root.getChildren().addAll(tileGroup, pieceGroup);
+        Label label = new Label("лол");
 
-        for (int y = 1; y < HEIGHT+1; y++) {
-            for (int x = 1; x < WIDTH+1; x++) {
+        for (int y = 0; y < HEIGHT; y++) {
+            for (int x = 0; x < WIDTH; x++) {
                 Tile tile = new Tile((x + y) % 2 == 0, x, y);// (выбор цвета маркер , x,  y)
                 board[x][y] = tile;//добавление клетки на поле
 
                 tileGroup.getChildren().add(tile);//добавление тайла в группу
                 Piece piece = null;
-                if (y < 3) {
+                if (y ==2 || y==1) {
                     piece = makePiece(PieceType.RED, x, y);
                 }
-                if (y > 6) {
+                if (y== 6 || y==5) {
                     piece = makePiece(PieceType.WHITE, x, y);
                 }
 
@@ -58,38 +61,38 @@ public class CheckersApp extends Application {
     /**
      * Метод ниже обрабатывает 2 из  4 вариантов как ходит дамка
      * */
-private MoveResult cut1 (int x1, int y1, int y2, Piece piece){
-    int killed = -1;
-    for(int i = y1+1;i<y2 ; i++) {
-        if (board[x1][i].hasPiece()){
-            if (piece.getType() == PieceType.WHITEKING) {//если белай дамка
-                if ((board[x1][i].getPiece().getType() == PieceType.RED ||
-                        board[x1][i].getPiece().getType() == PieceType.REDKING)) {
-                    if (killed == -1)
-                        killed = i;
-                    else return new MoveResult(MoveType.NONE);
-                }else if ((board[x1][i].getPiece().getType() == PieceType.WHITE ||
-                        board[x1][i].getPiece().getType() == PieceType.WHITEKING) ){//лево тру , право фолз
-                    return new MoveResult(MoveType.NONE);
+    private MoveResult cut1 (int x1, int y1, int y2, Piece piece){
+        int killed = -1;
+        for(int i = y1+1;i<y2 ; i++) {
+            if (board[x1][i].hasPiece()){
+                if (piece.getType() == PieceType.WHITEKING) {//если белай дамка
+                    if ((board[x1][i].getPiece().getType() == PieceType.RED ||
+                            board[x1][i].getPiece().getType() == PieceType.REDKING)) {
+                        if (killed == -1)
+                            killed = i;
+                        else return new MoveResult(MoveType.NONE);
+                    }else if ((board[x1][i].getPiece().getType() == PieceType.WHITE ||
+                            board[x1][i].getPiece().getType() == PieceType.WHITEKING) ){//лево тру , право фолз
+                        return new MoveResult(MoveType.NONE);
+                    }
                 }
-            }
-            if (piece.getType() == PieceType.REDKING) {//если белай дамка
-                if ((board[x1][i].getPiece().getType() == PieceType.WHITE ||
-                        board[x1][i].getPiece().getType() == PieceType.WHITEKING)) {
-                    if (killed == -1)
-                        killed = i;
-                    else return new MoveResult(MoveType.NONE);
-                }else if ((board[x1][i].getPiece().getType() == PieceType.RED ||
-                        board[x1][i].getPiece().getType() == PieceType.REDKING) ){//лево тру , право фолз
-                    return new MoveResult(MoveType.NONE);
+                if (piece.getType() == PieceType.REDKING) {//если белай дамка
+                    if ((board[x1][i].getPiece().getType() == PieceType.WHITE ||
+                            board[x1][i].getPiece().getType() == PieceType.WHITEKING)) {
+                        if (killed == -1)
+                            killed = i;
+                        else return new MoveResult(MoveType.NONE);
+                    }else if ((board[x1][i].getPiece().getType() == PieceType.RED ||
+                            board[x1][i].getPiece().getType() == PieceType.REDKING) ){//лево тру , право фолз
+                        return new MoveResult(MoveType.NONE);
+                    }
                 }
             }
         }
+        if (killed!= -1)
+            return new MoveResult(MoveType.KILL, board[x1][killed].getPiece());
+        return new MoveResult(MoveType.NORMAL);
     }
-    if (killed!= -1)
-        return new MoveResult(MoveType.KILL, board[x1][killed].getPiece());
-    return new MoveResult(MoveType.NORMAL);
-}
 
 
     /**
@@ -154,8 +157,8 @@ private MoveResult cut1 (int x1, int y1, int y2, Piece piece){
             else if (x0 > newX)
                 return cut2(newX, x0, y0, piece);
         }
-            return new MoveResult(MoveType.NONE);
-        }
+        return new MoveResult(MoveType.NONE);
+    }
 
     /**
      * Метод ниже проверяет что произойдёт если попробовать переместить шашку на новую клетку
@@ -180,10 +183,9 @@ private MoveResult cut1 (int x1, int y1, int y2, Piece piece){
         boolean anyMoved = false;
         boolean tryKill = ((newY == y0 && (Math.abs(newX - x0) == 2) ||
                 newX == x0 && (Math.abs(newY - y0) == 2))&& !board[newX][newY].hasPiece());
-        for (int i = 1; i < 9; i++) {
-            for (int j = 1; j < 9; j++) {
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
                 if (board[i][j] != null && board[i][j].hasPiece() && board[i][j].getPiece().wasMoved()){
-
                     anyMoved = true;
                 }
             }
@@ -237,8 +239,29 @@ private MoveResult cut1 (int x1, int y1, int y2, Piece piece){
 
 
 
+
     /**
-     *Буду признателен если подскажете почему этот метод "isNearPiece" работает некорректно и пишет что рядом есть шашки которые можно съесть а их нет
+     *Метод ниже проверяет одно направление относительно нашей шашки .
+     *  Проверяет есть ли в этом направлении шашки котороые можно съесть
+     *  @param x указывает на координату X где находится наша шашка
+     * @param y указывает на координату Y где находится наша шашка
+     * @param changeX указывает дельту/направление по оси X
+     * @param changeY указывает дельту/направление по оси Y
+     */
+    private boolean nearCheck (int x, int y ,int changeX ,int changeY){
+        try {
+            return (board[x+changeX][x+changeX]!=null&&
+                    board[x+changeX*2][y+changeY*2]!=null &&
+                    board[x+changeX][y+changeY].hasPiece()&&
+                    !board[x+changeX*2][y+changeY*2].hasPiece());
+        }catch (ArrayIndexOutOfBoundsException e){
+            return false;
+        }
+    }
+
+    /**
+     *Буду признателен если подскажете почему этот метод "isNearPiece" работает некорректно
+     * и пишет что рядом есть шашки которые можно съесть а их нет при случае когда шашка ест по горизонтали что неверно
      * Метод ниже проверяет есть ли рядом шашки которые можно съесть
      * @param x указывает на координату X где находится наша шашка
      * @param y указывает на координату Y где находится наша шашка
@@ -248,27 +271,24 @@ private MoveResult cut1 (int x1, int y1, int y2, Piece piece){
 
         boolean isWhite = board[x][y].getPiece().getType()==PieceType.WHITE;
 
-        if (board[x][y].getPiece().getType()==PieceType.WHITEKING || isWhite)//попробовать оставить проверку по всем направлениям и просто ловить налы
+        if (board[x][y].getPiece().getType()==PieceType.WHITEKING || isWhite)
         {
-            return  (board[x][y-1]!=null&& board[x][y-2]!=null && board[x][y-1].hasPiece() && board[x][y-1].getPiece().getType() == PieceType.RED && !board[x][y-2].hasPiece()) ||
-                    (board[x][y-1]!=null&& board[x][y-2]!=null &&board[x][y-1].hasPiece() && board[x][y-1].getPiece().getType() == PieceType.REDKING && !board[x][y-2].hasPiece()) ||
-                    (board[x+1][y]!=null&& board[x+2][y]!=null &&board[x+1][y].hasPiece() && board[x+1][y].getPiece().getType() == PieceType.RED && !board[x+2][y].hasPiece()) ||
-                    (board[x+1][y]!=null&& board[x+2][y]!=null &&board[x+1][y].hasPiece() && board[x+1][y].getPiece().getType() == PieceType.REDKING && !board[x+2][y].hasPiece()) ||
-                    (board[x-1][y]!=null&& board[x-2][y]!=null &&board[x-1][y].hasPiece() && board[x-1][y].getPiece().getType() == PieceType.RED && !board[x-2][y].hasPiece()) ||
-                    (board[x-1][y]!=null&& board[x-2][y]!=null &&board[x-1][y].hasPiece() && board[x-1][y].getPiece().getType() == PieceType.REDKING && !board[x-2][y].hasPiece());
+            return   (nearCheck(x,y,0,-1)&&board[x][y-1].getPiece().getType() == PieceType.RED)||
+                    (nearCheck(x,y,0,-1)&& board[x][y-1].getPiece().getType() == PieceType.REDKING)||
+                    (nearCheck(x,y,1,0)&& board[x+1][y].getPiece().getType() == PieceType.RED )||
+                    (nearCheck(x,y,1,0)&& board[x+1][y].getPiece().getType() == PieceType.REDKING )||
+                    (nearCheck(x,y,-1,0)&& board[x-1][y].getPiece().getType() == PieceType.RED)||
+                    (nearCheck(x,y,-1,0)&& board[x-1][y].getPiece().getType() == PieceType.REDKING);
         }else
-            return  (board[x][y+1]!=null&& board[x][y+2]!=null && board[x][y+1].hasPiece() && board[x][y+1].getPiece().getType() == PieceType.WHITE&& !board[x][y+2].hasPiece()) ||
-                    (board[x][y+1]!=null&& board[x][y+2]!=null && board[x][y+1].hasPiece() && board[x][y+1].getPiece().getType() == PieceType.WHITEKING&& !board[x][y+2].hasPiece()) ||
-                    (board[x+1][y]!=null&& board[x+2][y]!=null && board[x+1][y].hasPiece() && board[x+1][y].getPiece().getType() == PieceType.WHITE&& !board[x+2][y].hasPiece()) ||
-                    (board[x+1][y]!=null&& board[x+2][y]!=null && board[x+1][y].hasPiece() && board[x+1][y].getPiece().getType() == PieceType.WHITEKING&& !board[x+2][y].hasPiece()) ||
-                    (board[x-1][y]!=null&& board[x-2][y]!=null && board[x-1][y].hasPiece() && board[x-1][y].getPiece().getType() == PieceType.WHITE&& !board[x-2][y].hasPiece()) ||
-                    (board[x-1][y]!=null&& board[x-2][y]!=null && board[x-1][y].hasPiece() && board[x-1][y].getPiece().getType() == PieceType.WHITEKING&& !board[x-2][y].hasPiece());//false когда рядом нет шашек которые можно съесть
+            return  (nearCheck(x,y,0,1)&&(board[x][y-1].getPiece().getType() == PieceType.WHITE||board[x][y-1].getPiece().getType() == PieceType.WHITEKING))||
+                    (nearCheck(x,y,1,0)&& (board[x+1][y].getPiece().getType() == PieceType.WHITE|| board[x+1][y].getPiece().getType() == PieceType.WHITEKING) )||
+                    (nearCheck(x,y,-1,0)&&( board[x-1][y].getPiece().getType() == PieceType.WHITE|| board[x-1][y].getPiece().getType() == PieceType.WHITEKING));
     }
 
 
 private boolean checkBoard (){
-    for (int i = 1; i < 9; i++) {
-        for (int j = 1; j < 9; j++) {
+    for (int i = 0; i < 8; i++) {
+        for (int j = 0; j < 8; j++) {
             if (board[i][j] != null &&
                     board[i][j].hasPiece() &&
                     isNearPiece(i,j) &&
@@ -299,82 +319,87 @@ private boolean checkBoard (){
      * @param y указывает на координату Y где была наша шашка
      * @return возвращает есть ли рядом шашки которые можно съесть
      */
-private Piece makePiece(PieceType type ,  int x, int y) {
-    Piece piece = new Piece(type , false, x, y);//шашка с типом по координатам x y
+    private Piece makePiece(PieceType type ,  int x, int y) {
+        Piece piece = new Piece(type , false, x, y);//шашка с типом по координатам x y
 
-    piece.setOnMouseReleased(e -> {
-        int newX = toBoard(piece.getLayoutX());//присваевает x шашки в newX
-        int newY = toBoard(piece.getLayoutY());
-        MoveResult result;
-        if (newX < 0 || newY < 0 || newX >= WIDTH+1 || newY >= HEIGHT+1) {
-            result = new MoveResult(MoveType.NONE);//если мы хотим переместиться вне поля то NONE
-        } else {
-            result = tryMove(piece, newX, newY);//иначе попробоавть подвинуть в новый x y шашку
-        }
-        int x0 = toBoard(piece.getOldX());//присваивает старый X
-        int y0 = toBoard(piece.getOldY());
-        if (newY<8 && newY>0 ){
-            switch (result.getType()) {
-                case NONE:
-                    piece.abortMove();
-                    break;
-                case NORMAL:
-                    piece.move(newX, newY);
-                    board[x0][y0].setPiece(null);//в старом месте нал
-                    board[newX][newY].setPiece(piece);//в новом месте шашка
-                    step = !step;//переход ходя после обычного хода
-                    break;
-                case KILL:
-                    piece.move(newX, newY);
-                    board[x0][y0].setPiece(null);//в новом месте шашка
-                    board[newX][newY].setPiece(piece);
-                    // Буду признателен если подскажете почему метод "isNearPiece" работает некорректно и пишет что рядом есть шашки которые можно съесть а их нет
-                    if (isNearPiece( newX, newY)){
-                        piece.setMoved(true);
-                    }
-                    if (!isNearPiece( newX, newY)){
-                        piece.setMoved(false);
-                        step = !step;    //переход хода если больше некого есть
-                    }
-                    Piece otherPiece = result.getPiece();
-                    board[toBoard(otherPiece.getOldX())][toBoard(otherPiece.getOldY())].setPiece(null);
-                    pieceGroup.getChildren().remove(otherPiece);
-                    break;
-            }}
-        if (newY==8 || newY==1){
-            switch (result.getType()) {
-                case NONE:
-                    piece.abortMove();
-                    break;
-                case NORMAL:
-                    piece.move(newX, newY);
-                    board[x0][y0].setPiece(null);//в старом месте нал
-                    if(piece.getType()==PieceType.WHITE)
-                        piece.setType(PieceType.WHITEKING);
-                    if(piece.getType()==PieceType.RED)
-                        piece.setType(PieceType.REDKING);
-                    board[newX][newY].setPiece(piece);//в новом месте шашка
-                    step = !step;//переход ходя после обычного хода
-                    break;
-                case KILL:
-                    piece.move(newX, newY);
-                    board[x0][y0].setPiece(null);
-                    if(piece.getType()==PieceType.WHITE)
-                        piece.setType(PieceType.WHITEKING);
-                    if(piece.getType()==PieceType.RED)
-                        piece.setType(PieceType.REDKING);
-                    board[newX][newY].setPiece(piece);//в новом месте шашка
-                    Piece otherPiece = result.getPiece();
-                    board[toBoard(otherPiece.getOldX())][toBoard(otherPiece.getOldY())].setPiece(null);
-                    pieceGroup.getChildren().remove(otherPiece);
-
-                    break;
+        piece.setOnMouseReleased(e -> {
+            int newX = toBoard(piece.getLayoutX());//присваевает x шашки в newX
+            int newY = toBoard(piece.getLayoutY());
+            MoveResult result;
+            if (newX < 0 || newY < 0 || newX >= WIDTH+1 || newY >= HEIGHT+1) {
+                result = new MoveResult(MoveType.NONE);//если мы хотим переместиться вне поля то NONE
+            } else {
+                result = tryMove(piece, newX, newY);//иначе попробоавть подвинуть в новый x y шашку
             }
-        }
-    });
+            int x0 = toBoard(piece.getOldX());//присваивает старый X
+            int y0 = toBoard(piece.getOldY());
+            if (newY<8 && newY>0 ){
+                switch (result.getType()) {
+                    case NONE:
+                        piece.abortMove();
+                        break;
+                    case NORMAL:
+                        piece.move(newX, newY);
+                        board[x0][y0].setPiece(null);//в старом месте нал
+                        board[newX][newY].setPiece(piece);//в новом месте шашка
+                        step = !step;//переход ходя после обычного хода
+                        break;
+                    case KILL:
+                        piece.move(newX, newY);
+                        board[x0][y0].setPiece(null);//в новом месте шашка
+                        board[newX][newY].setPiece(piece);
+                        // Буду признателен если подскажете почему метод "isNearPiece" работает некорректно и
+                        // пишет что рядом есть шашки которые можно съесть а их нет (при случае когда шашка есть по горизонтали)
+                        if (isNearPiece( newX, newY)){
+                            piece.setMoved(true);
+                        }else{
+                            piece.setMoved(false);
+                            step = !step;    //переход хода если больше некого есть
+                        }
+                        Piece otherPiece = result.getPiece();
+                        board[toBoard(otherPiece.getOldX())][toBoard(otherPiece.getOldY())].setPiece(null);
+                        pieceGroup.getChildren().remove(otherPiece);
+                        break;
+                }}
+            if (newY==7 || newY==0){
+                switch (result.getType()) {
+                    case NONE:
+                        piece.abortMove();
+                        break;
+                    case NORMAL:
+                        piece.move(newX, newY);
+                        board[x0][y0].setPiece(null);//в старом месте нал
+                        if(piece.getType()==PieceType.WHITE)
+                            piece.setType(PieceType.WHITEKING);
+                        if(piece.getType()==PieceType.RED)
+                            piece.setType(PieceType.REDKING);
+                        board[newX][newY].setPiece(piece);//в новом месте шашка
+                        step = !step;//переход ходя после обычного хода
+                        break;
+                    case KILL:
+                        piece.move(newX, newY);
+                        board[x0][y0].setPiece(null);
+                        if(piece.getType()==PieceType.WHITE)
+                            piece.setType(PieceType.WHITEKING);
+                        if(piece.getType()==PieceType.RED)
+                            piece.setType(PieceType.REDKING);
+                        board[newX][newY].setPiece(piece);//в новом месте шашка
+                        if (isNearPiece( newX, newY)){
+                            piece.setMoved(true);
+                        }else {
+                            piece.setMoved(false);
+                            step = !step;    //переход хода если больше некого есть
+                        }
+                        Piece otherPiece = result.getPiece();
+                        board[toBoard(otherPiece.getOldX())][toBoard(otherPiece.getOldY())].setPiece(null);
+                        pieceGroup.getChildren().remove(otherPiece);
+                        break;
+                }
+            }
+        });
 
-    return piece;
-}
+        return piece;
+    }
 
     public static void main(String[] args) {
         launch(args);
