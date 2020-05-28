@@ -264,7 +264,7 @@ public class CheckersApp extends Application {
      * @param y указывает на координату Y где находится наша шашка
      * @return возвращает есть ли рядом шашки которые можно съесть
      */
-    private boolean isNearPiece ( int x , int y) {
+    public boolean isNearPiece ( int x , int y) {
 
         boolean isWhite = board[x][y].getPiece().getType()==PieceType.WHITE;
 

@@ -3,7 +3,7 @@ package controller;
 
 import view.Piece;
 
-class MoveResult {
+public class MoveResult {
 
     private MoveType type;
 
