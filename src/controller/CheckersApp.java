@@ -6,11 +6,9 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
-import javafx.util.Pair;
 import view.*;
 import view.Tile;
 
-import java.awt.*;
 
 public class CheckersApp extends Application {
 
@@ -19,7 +17,7 @@ public class CheckersApp extends Application {
     private static final int HEIGHT = 8;
     private boolean step = true;
 
-    private Tile[][] board = new Tile[WIDTH][HEIGHT];//массив клеток
+    public Tile[][] board = new Tile[WIDTH][HEIGHT];//массив клеток
 
     private Group tileGroup = new Group();
     private Group pieceGroup = new Group();
@@ -28,7 +26,7 @@ public class CheckersApp extends Application {
      *Метод ниже создаёт поле шашек и расставляет шашки на изначальные месте
      * @return корневой узел
      */
-    private Parent createContent() {
+    public Parent createContent() {
         AnchorPane  root = new AnchorPane ();
         root.setPrefSize((WIDTH) * TILE_SIZE, (HEIGHT) * TILE_SIZE); //размер поля
         root.getChildren().addAll(tileGroup, pieceGroup);
