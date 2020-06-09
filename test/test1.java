@@ -1,7 +1,5 @@
 import controller.CheckersApp;
-import controller.MoveResult;
-import controller.MoveType;
-import controller.PieceType;
+import controller.Colour;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -14,8 +12,8 @@ class test1 {
             assertEquals(8,bardTest.board.length);
             assertTrue(bardTest.board[1][1].hasPiece());
             assertTrue(bardTest.board[6][6].hasPiece());
-            assertSame(bardTest.board[6][6].getPiece().getType(), PieceType.WHITE);
-            assertSame(bardTest.board[1][1].getPiece().getType(), PieceType.RED);
+            assertSame(bardTest.board[6][6].getPiece().getColour(), Colour.WHITE);
+            assertSame(bardTest.board[1][1].getPiece().getColour(), Colour.RED);
         }
     @Test
     void testMove() {

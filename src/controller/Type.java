@@ -7,6 +7,7 @@ package controller;
  * WHITE белая шашка
  * WHITEKING белая дамка
  */
-public enum PieceType {
-    RED, WHITE, REDKING, WHITEKING
+public enum Type {
+    KING, PAWN
+
 }
