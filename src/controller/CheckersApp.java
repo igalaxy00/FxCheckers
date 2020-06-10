@@ -145,7 +145,6 @@ public class CheckersApp extends Application {
             for (int j = 0; j < 8; j++) {
                 if (board[i][j] != null && board[i][j].hasPiece() && board[i][j].getPiece().wasMoved()){
                     anyMoved = true;
-                    System.out.println(i+"  i "+"   "+j + "   j");
                 }
             }
         }
