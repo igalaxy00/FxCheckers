@@ -4,7 +4,9 @@ import controller.CheckersApp;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
-
+/**
+ * ячейка поля с размером и цветом
+ */
 public class Tile extends Rectangle {
 
     private Piece piece;

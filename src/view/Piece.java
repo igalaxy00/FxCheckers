@@ -9,7 +9,9 @@ import javafx.scene.shape.Ellipse;
 
 import static controller.CheckersApp.TILE_SIZE;
 
-
+/**
+ * Шашка . Её размеры свойства и выставление на поле .
+ */
 public class Piece extends StackPane {
     private Colour colour;
     private Type type;
@@ -60,9 +62,6 @@ public class Piece extends StackPane {
                 ? Color.valueOf("#c40003") : Color.valueOf("#fff9f4"));
         if (y==7 || y==0)
             ellipse.setStroke(Color.AQUAMARINE);
-       // System.out.println(x + "  лолллл  x" + "\n" + y+"  y");
-   //     ellipse.setStroke(Color.BLACK);//цвет ободка
-      //  ellipse.setStrokeWidth(TILE_SIZE * 0.03);//толищна ободка
 
         if (y==7 || y==0){
             ellipse.setStroke(Color.AQUAMARINE);
