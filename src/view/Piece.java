@@ -1,13 +1,12 @@
 package view;
 
-import controller.CheckersApp;
 import controller.Colour;
 import controller.Type;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Ellipse;
 
-import static controller.CheckersApp.TILE_SIZE;
+import static view.CheckersApp.TILE_SIZE;
 
 /**
  * Шашка . Её размеры свойства и выставление на поле .
@@ -20,11 +19,11 @@ public class Piece extends StackPane {
     private double mouseX, mouseY;
     private double oldX, oldY;
 
-    public void setType(Type type) {
+    void setType(Type type) {
         this.type = type;
     }
 
-    public Type getType() {
+    Type getType() {
         return type;
     }
 
@@ -36,22 +35,22 @@ public class Piece extends StackPane {
         this.colour = colour;
     }
 
-    public void setMoved(boolean moved) {
+    void setMoved(boolean moved) {
         this.moved = moved;
     }
-    public boolean wasMoved() {
+    boolean wasMoved() {
         return moved;
     }
 
-    public double getOldX() {
+    double getOldX() {
         return oldX;
     }
 
-    public double getOldY() {
+    double getOldY() {
         return oldY;
     }
 
-    public Piece(Type type, Colour colour, boolean moved , int x, int y) {
+    Piece(Type type, Colour colour, boolean moved, int x, int y) {
         this.type = type;
         this.colour = colour;
         this.moved = moved;
@@ -88,13 +87,13 @@ public class Piece extends StackPane {
 
     }
 
-    public void move(int x, int y) {
+    void move(int x, int y) {
         oldX = x * TILE_SIZE;
         oldY = y * TILE_SIZE;
         relocate(oldX, oldY);
     }
 
-    public void abortMove() {
+    void abortMove() {
         relocate(oldX, oldY);//отбой перемещения
     }
 }

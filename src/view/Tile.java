@@ -1,6 +1,5 @@
 package view;
 
-import controller.CheckersApp;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
@@ -19,11 +18,11 @@ public class Tile extends Rectangle {
         return piece;
     }
 
-    public void setPiece(Piece piece) {
+    void setPiece(Piece piece) {
         this.piece = piece;
     }
 
-    public Tile(boolean light, int x, int y) {
+    Tile(boolean light, int x, int y) {
         setWidth(CheckersApp.TILE_SIZE);//указ размера тайла
         setHeight(CheckersApp.TILE_SIZE);
 

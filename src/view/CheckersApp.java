@@ -1,5 +1,9 @@
-package controller;
+package view;
 
+import controller.Colour;
+import controller.MoveResult;
+import controller.MoveType;
+import controller.Type;
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Parent;
@@ -12,7 +16,7 @@ import view.Tile;
 
 public class CheckersApp extends Application {
 
-    public static final int TILE_SIZE = 100;//размер тайла
+    static final int TILE_SIZE = 100;//размер тайла
     private static final int WIDTH = 8;
     private static final int HEIGHT = 8;
     private boolean step = true;
@@ -37,7 +41,7 @@ public class CheckersApp extends Application {
                 tileGroup.getChildren().add(tile);//добавление тайла в группу
                 Piece piece = null;
                 if (y ==2 || y==1) {
-                    piece = makePiece(Colour.RED, x, y,Type.PAWN);
+                    piece = makePiece(Colour.RED, x, y, Type.PAWN);
                 }
                 if (y== 6 || y==5) {
                     piece = makePiece(Colour.WHITE, x, y,Type.PAWN);

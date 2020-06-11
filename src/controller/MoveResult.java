@@ -7,21 +7,21 @@ public class MoveResult {
 
     private MoveType type;
 
-    MoveType getType() {
+    public MoveType getType() {
         return type;
     }
 
     private Piece piece;
 
-    Piece getPiece() {
+    public Piece getPiece() {
         return piece;
     }
 
-    MoveResult(MoveType type) {
+    public MoveResult(MoveType type) {
         this(type, null);
     }
 
-    MoveResult(MoveType type, Piece piece) {
+    public MoveResult(MoveType type, Piece piece) {
         this.type = type;
         this.piece = piece;
     }
