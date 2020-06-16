@@ -19,7 +19,7 @@ public class CheckersApp extends Application {
     static final int TILE_SIZE = 100;//размер тайла
     private static final int WIDTH = 8;
     private static final int HEIGHT = 8;
-    private boolean step = true;
+    private boolean step = true; //тру белые фолз красные
     public Tile[][] board = new Tile[WIDTH][HEIGHT];//массив клеток
 
     private Group tileGroup = new Group();
@@ -67,7 +67,8 @@ public class CheckersApp extends Application {
                 if (board[x1][i].getPiece().getColour()!=piece.getColour()){//если цвет это противник то
                     if (killed == -1)
                         killed = i;
-                    else return new MoveResult(MoveType.NONE);//если на пути 2 шашки
+                    else {System.out.println(1);
+                        return new MoveResult(MoveType.NONE);}//если на пути 2 шашки
                 }
             }
         }
@@ -84,12 +85,14 @@ public class CheckersApp extends Application {
                 if (board[i][y1].getPiece().getColour()!=piece.getColour()){//если цвет это противник то
                     if (killed == -1)
                         killed = i;
-                    else return new MoveResult(MoveType.NONE);//если на пути 2 шашки
+                    else {
+                        System.out.println(2);
+                        return new MoveResult(MoveType.NONE);}//если на пути 2 шашки
                 }
             }
         }
         if (killed!= -1)
-            return new MoveResult(MoveType.KILL, board[x1][killed].getPiece());
+            return new MoveResult(MoveType.KILL, board[killed][y1].getPiece());
         return new MoveResult(MoveType.NORMAL);
     }
 
@@ -105,8 +108,9 @@ public class CheckersApp extends Application {
      * @return возвращает результат хода.
      */
     private MoveResult kingKill(int x0 , int newX , int y0 , int newY , Piece piece ) {
-        if (board[newX][newY].hasPiece() ||newX<1 || newY<1|| newX>WIDTH || newY>HEIGHT)
-            return new MoveResult(MoveType.NONE);
+        if (board[newX][newY].hasPiece() /*||newX<0 || newY<0 */|| newX>WIDTH || newY>HEIGHT){
+            System.out.println(3);
+            return new MoveResult(MoveType.NONE);}
         if (x0 == newX) {
             if (y0 < newY)
                 return cut1(x0, y0, newY, piece);
@@ -118,9 +122,30 @@ public class CheckersApp extends Application {
                 return cut2(x0, newX, y0, piece);
             else if (x0 > newX)
                 return cut2(newX, x0, y0, piece);
-        }
-        return new MoveResult(MoveType.NONE);
+        }{
+            System.out.println(4);
+        return new MoveResult(MoveType.NONE);}
     }
+
+    private void checkColour(boolean step){//расставляет wasmoved тем которые могут етсь
+       // System.out.println("нначало метода");
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+            if (step && board[i][j] != null && board[i][j].hasPiece() && board[i][j].getPiece().getColour()==Colour.WHITE ){
+                if (isNearPiece(i,j)){//есть ли рядом красные которые можно есть
+               //     System.out.println("здесь");
+                    board[i][j].getPiece().setMoved(true);
+                }
+            }
+                if (!step && board[i][j] != null && board[i][j].hasPiece() && board[i][j].getPiece().getColour()==Colour.RED ){
+                    if (isNearPiece(i,j)){//есть ли рядом белые которые можно есть
+                        board[i][j].getPiece().setMoved(true);
+                    }
+                }
+            }
+        }
+    }
+
 
     /**
      * Метод ниже проверяет что произойдёт если попробовать переместить шашку на новую клетку
@@ -132,7 +157,6 @@ public class CheckersApp extends Application {
     private MoveResult tryMove(Piece piece, int newX, int newY) {//возможно ли сюда перейти
         int x0 = toBoard(piece.getOldX());//начальный x
         int y0 = toBoard(piece.getOldY());//начальный y
-
         if (step) {
             if (piece.getColour() == Colour.RED) {
                 return new MoveResult(MoveType.NONE);
@@ -142,16 +166,21 @@ public class CheckersApp extends Application {
                 return new MoveResult(MoveType.NONE);
             }
         }
+        if (board[1][0].hasPiece()){
+        System.out.println("в клетке 0 0 фишка");
+        }
         boolean anyMoved = false;
         boolean tryKill = ( newX<8 && newY<8&&((newY == y0 && (Math.abs(newX - x0) == 2)) ||
                 (newX == x0 && (Math.abs(newY - y0) == 2)))&& !board[newX][newY].hasPiece());
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < 8; i++) {//есть ли хоть одна возмувд
             for (int j = 0; j < 8; j++) {
                 if (board[i][j] != null && board[i][j].hasPiece() && board[i][j].getPiece().wasMoved()){
+                    System.out.println("была подвинута x"+ i + "   y "+j);
                     anyMoved = true;
                 }
             }
         }
+        System.out.println(anyMoved);
         if (anyMoved) {
             if (piece.wasMoved()) {
                 int x1 = x0 + (newX - x0) / 2;
@@ -212,14 +241,12 @@ public class CheckersApp extends Application {
      * @param changeY указывает дельту/направление по оси Y
      */
     private boolean nearCheck (int x, int y ,int changeX ,int changeY){
-        try {
-            return (board[x+changeX][x+changeX]!=null&&
-                    board[x+changeX*2][y+changeY*2]!=null &&
-                    board[x+changeX][y+changeY].hasPiece()&&
-                    !board[x+changeX*2][y+changeY*2].hasPiece());
-        }catch (ArrayIndexOutOfBoundsException e){
+        if (x+changeX>7 || y+changeY>7 || x+changeX*2>7 || y+changeY*2>7 || x+changeX<0 || y+changeY<0 || x+changeX*2<0 || y+changeY*2<0)
             return false;
-        }
+            return (board[x+changeX][y+changeY]!=null&&//в указанной клетке не пустота
+                    board[x+changeX*2][y+changeY*2]!=null &&// через клетку не пустота
+                    board[x+changeX][y+changeY].hasPiece()&&//в указанной клетке есть шашка
+                    !board[x+changeX*2][y+changeY*2].hasPiece());//через клетку нет шашки
     }
 
     /**
@@ -228,9 +255,7 @@ public class CheckersApp extends Application {
      * @return возвращает есть ли рядом шашки которые можно съесть
      */
     public boolean isNearPiece ( int x , int y) {
-
         boolean isWhite = board[x][y].getPiece().getColour()== Colour.WHITE ;
-//прописать для дамки
         if (board[x][y].getPiece().getType()==Type.PAWN) {
             if (isWhite) {
                 return (nearCheck(x, y, 0, -1) && (board[x][y - 1].getPiece().getColour() == Colour.RED)) ||
@@ -243,17 +268,89 @@ public class CheckersApp extends Application {
             }
         }else if(board[x][y].getPiece().getType()==Type.KING){
             if (isWhite){
-            return(nearCheck(x, y, 0, -1) && (board[x][y - 1].getPiece().getColour() == Colour.RED)) ||
-                (nearCheck(x, y, 0, 1) && (board[x][y + 1].getPiece().getColour() == Colour.RED)) ||
-                (nearCheck(x, y, 1, 0) && (board[x + 1][y].getPiece().getColour() == Colour.RED)) ||
-                (nearCheck(x, y, -1, 0) && (board[x - 1][y].getPiece().getColour() == Colour.RED));}
+                return gorizontalKingPlus(x,y,Colour.WHITE)||gorizontalKingMinus(x,y,Colour.WHITE)
+                ||verticalKingPlus(x,y,Colour.WHITE)||verticalKingMinus(x,y,Colour.WHITE)
+                       /*(nearCheck(x, y, 0, -1) && (board[x][y - 1].getPiece().getColour() == Colour.RED)) ||
+                                (nearCheck(x, y, 0, 1) && (board[x][y + 1].getPiece().getColour() == Colour.RED)) ||
+                                (nearCheck(x, y, 1, 0) && (board[x + 1][y].getPiece().getColour() == Colour.RED)) ||
+                                (nearCheck(x, y, -1, 0) && (board[x - 1][y].getPiece().getColour() == Colour.RED))*/;}
         }else
-            return (nearCheck(x, y, 0, -1) && (board[x][y - 1].getPiece().getColour() == Colour.RED)) ||
-                    (nearCheck(x, y, 0, 1) && (board[x][y + 1].getPiece().getColour() == Colour.WHITE)) ||
-                    (nearCheck(x, y, 1, 0) && (board[x + 1][y].getPiece().getColour() == Colour.WHITE)) ||
-                    (nearCheck(x, y, -1, 0) && (board[x - 1][y].getPiece().getColour() == Colour.WHITE));
+            return gorizontalKingPlus(x,y,Colour.RED)||gorizontalKingMinus(x,y,Colour.RED)
+                    || verticalKingPlus(x,y,Colour.RED)||verticalKingMinus(x,y,Colour.RED)
+                     /*(nearCheck(x, y, 0, -1) && (board[x][y - 1].getPiece().getColour() == Colour.WHITE)) ||
+                            (nearCheck(x, y, 0, 1) && (board[x][y + 1].getPiece().getColour() == Colour.WHITE)) ||
+                            (nearCheck(x, y, 1, 0) && (board[x + 1][y].getPiece().getColour() == Colour.WHITE)) ||
+                            (nearCheck(x, y, -1, 0) && (board[x - 1][y].getPiece().getColour() == Colour.WHITE))*/;
         return false;
     }
+    private boolean gorizontalKingPlus(int x0 , int y0 , Colour colour){
+        // System.out.println("начало горизонтал");
+        for (int i = x0 ; i<8 ; i++){
+            if (i!=x0)
+                if (board[i][y0].hasPiece() && board[i][y0].getPiece().getColour()== colour ){//если на пути стоит такой же цвет
+                    return false;}
+            if (board[i][y0].hasPiece() && board[i][y0].getPiece().getColour()!= colour && i<7 && !board[i+1][y0].hasPiece()){
+                return true;}// ЕСТЬ ШАШКА ОНА ДРУГОГО ЦВЕТА
+
+        }
+       /* for (int i = x0 ; i>-1 ; i--){
+            if (i!=x0)
+                if (board[i][y0].hasPiece() && board[i][y0].getPiece().getColour()== colour ){//если на пути стоит такой же цвет
+                    return false;}
+            if (board[i][y0].hasPiece() && board[i][y0].getPiece().getColour()!= colour && i>0 && !board[i+1][y0].hasPiece()){
+                return true;}
+        }*/
+        return false;
+    }
+    private boolean gorizontalKingMinus(int x0 , int y0 , Colour colour){
+        for (int i = x0 ; i>-1 ; i--){
+            if (i!=x0)
+                if (board[i][y0].hasPiece() && board[i][y0].getPiece().getColour()== colour ){//если на пути стоит такой же цвет
+                    return false;}
+            if (board[i][y0].hasPiece() && board[i][y0].getPiece().getColour()!= colour && i>0 && !board[i-1][y0].hasPiece()){
+                return true;}
+
+        }
+        return false;
+    }
+
+
+
+
+
+private boolean verticalKingPlus(int x0, int y0 ,Colour colour){
+    for (int i = y0 ; i<8 ; i++){
+        if (i!=y0)
+            if(board[x0][i].hasPiece()&& board[x0][i].getPiece().getColour()==colour)
+                return false;
+        if(board[x0][i].hasPiece()&& board[x0][i].getPiece().getColour()!=colour&& i<7 && !board[x0][i+1].hasPiece())
+            return true;
+    }
+    /*for (int i = y0 ; i>-1 ; i--){
+        if (i!=y0)
+            if(board[x0][i].hasPiece()&& board[x0][i].getPiece().getColour()==colour)
+                return false;
+        if(board[x0][i].hasPiece()&& board[x0][i].getPiece().getColour()!=colour&& i>0  && !board[x0][i-1].hasPiece())
+            return true;
+    }*/
+return false;
+}
+    private boolean verticalKingMinus(int x0, int y0 ,Colour colour){
+        System.out.println("метод");
+        for (int i = y0 ; i>-1 ; i--){
+            if (i!=y0)
+                if(board[x0][i].hasPiece()&& board[x0][i].getPiece().getColour()==colour){
+                    System.out.println(i);
+                    return false;}
+            if(board[x0][i].hasPiece()&& board[x0][i].getPiece().getColour()!=colour&& i>0  && !board[x0][i-1].hasPiece()){
+                System.out.println("хуй   "+i);
+                System.out.println(step);
+                return true;}
+        }
+        return false;
+    }
+
+
 
 
 
@@ -292,7 +389,8 @@ public class CheckersApp extends Application {
             }
             int x0 = toBoard(piece.getOldX());//присваивает старый X
             int y0 = toBoard(piece.getOldY());
-            if (newY<8 && newY>0 ){
+
+            if (newY<8 && newY>0 ){//подумать
                 switch (result.getType()) {
                     case NONE:
                         piece.abortMove();
@@ -302,10 +400,11 @@ public class CheckersApp extends Application {
                         board[x0][y0].setPiece(null);//в старом месте нал
                         board[newX][newY].setPiece(piece);//в новом месте шашка
                         step = !step;//переход ходя после обычного хода
+                        checkColour(step);
                         break;
                     case KILL:
                         piece.move(newX, newY);
-                        board[x0][y0].setPiece(null);//в новом месте шашка
+                        board[x0][y0].setPiece(null);//в старом месте нал
                        board[newX][newY].setPiece(piece);
                         Piece otherPiece = result.getPiece();
                         board[toBoard(otherPiece.getOldX())][toBoard(otherPiece.getOldY())].setPiece(null);
@@ -316,6 +415,7 @@ public class CheckersApp extends Application {
                         }else{
                             piece.setMoved(false);
                             step = !step;    //переход хода если больше некого есть
+                            checkColour(step);
                         }
                         break;
                 }}
@@ -335,11 +435,13 @@ public class CheckersApp extends Application {
                         pieceGroup.getChildren().add(piece1);
                         pieceGroup.getChildren().remove(piece);
                         step = !step;//переход ходя после обычного хода
+                        checkColour(step);
                         break;
                     case KILL:
-                        Piece piece2 = makePiece(piece.getColour(), newX, newY,Type.PAWN);
+                       // board[newX][newY].setPiece(null);
+                        Piece piece2 = makePiece(piece.getColour(), newX, newY,Type.KING);
                         board[x0][y0].setPiece(null);
-                        piece2.setType(Type.KING);
+                       // piece2.setType(Type.KING);
                         piece2.move(newX,newY);
                         board[newX][newY].setPiece(piece2);
                         pieceGroup.getChildren().add(piece2);
@@ -352,6 +454,7 @@ public class CheckersApp extends Application {
                         }else {
                             piece.setMoved(false);
                             step = !step;    //переход хода если больше некого есть
+                            checkColour(step);
                         }
                         break;
                 }
