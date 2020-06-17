@@ -14,6 +14,7 @@ import static view.CheckersApp.TILE_SIZE;
 public class Piece extends StackPane {
     private Colour colour;
     private Type type;
+    private int checkerX, checkerY;
     private boolean moved;
 
     private double mouseX, mouseY;
@@ -94,6 +95,11 @@ public class Piece extends StackPane {
     }
 
     void abortMove() {
-        relocate(oldX, oldY);//отбой перемещения
+        //relocate(oldX, oldY);//отбой перемещения
+        checkerX =  ((int) (oldX / TILE_SIZE) * TILE_SIZE);
+        checkerY =  ((int) (oldY / TILE_SIZE) * TILE_SIZE);
+        relocate(checkerX, checkerY);
     }
+
+
 }
